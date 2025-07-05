@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpStatus, ParseEnumPipe, Post, Put, Res, Param, Body, ParseUUIDPipe, Logger } from '@nestjs/common';
+import { Controller, Delete, Get, HttpStatus, ParseEnumPipe, Post, Put, Res, Param, Body, ParseUUIDPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ReportType } from 'src/data';
 import { ReportService } from './report.service';
@@ -23,11 +23,11 @@ export class ReportController {
   getReport(@Param('type', new ParseEnumPipe(ReportType)) type: string, @Res() res: Response) {
     const reportType = getReportType(type)
     const data = this.ReportService.getAllReports(reportType);
-    Logger.log(data, 'ReportController:getReport');
-    res.status(HttpStatus.OK).json({
-      message: `Fetching all reports of type: ${reportType}`,
-      data
-    });
+    // res.status(HttpStatus.OK).json({
+    //   message: `Fetching all reports of type: ${reportType}`,
+    //   data
+    // });
+    return data;
   }
 
   @Get(':id')

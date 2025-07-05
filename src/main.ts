@@ -11,6 +11,7 @@ async function bootstrap() {
   app.use(loggerMiddleware)
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // Automatically remove properties that do not have any decorators
+    forbidNonWhitelisted: true, // 
     transform: true, // Automatically transform payloads to DTO instances
     transformOptions: {
       enableImplicitConversion: true, // Allow implicit conversion of types

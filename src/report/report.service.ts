@@ -15,8 +15,9 @@ interface UpdateReport {
 export class ReportService {
 
   getAllReports(type: ReportType): ReportResponseDto[] {
-    return data.filter(report => report.type === type)
+    const reports = data.filter(report => report.type === type)
       .map(report => new ReportResponseDto(report));
+    return reports;
   }
 
   getReportById(id: string): ReportResponseDto | null {

@@ -44,7 +44,7 @@ export class ReportResponseDto {
   created_at: Date;
 
   @Exclude()
-  update_at: Date;
+  updated_at: Date;
 
   type: ReportType;
 }

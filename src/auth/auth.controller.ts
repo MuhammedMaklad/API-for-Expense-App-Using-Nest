@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { signUpDto } from './dtos/signUp.dto';
 import { signInDto } from './dtos/signIn.dto';
 import { Response } from 'express';
+import { RefreshTokenDto } from './dtos/refreshToken.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
@@ -10,7 +11,7 @@ export class AuthController {
   // TODO: POST Signup
   @Post("SignUp")
   async signUp(@Body() req: signUpDto, @Res() res: Response) {
-    const data = await this.authService.signup(req);
+    await this.authService.signup(req);
     return res.status(HttpStatus.CREATED).json({
       message: "Done"
     })
@@ -18,11 +19,18 @@ export class AuthController {
   // TODO: POST Login
   @Post("SignIn")
   async signIn(@Body() req: signInDto, @Res() res: Response) {
-    const msg = await this.authService.signIn(req);
+    const tokens = await this.authService.signIn(req);
     return res.status(HttpStatus.OK).json({
-      message: msg
+      tokens
     })
   }
 
   // TODO: POST Refresh Token
+  @Post('RefreshToken')
+  async refreshToken(@Body() req: RefreshTokenDto, @Res() res: Response) {
+    const tokens = await this.authService.refreshToken(req);
+    return res.status(HttpStatus.OK).json({
+      tokens
+    })
+  }
 }

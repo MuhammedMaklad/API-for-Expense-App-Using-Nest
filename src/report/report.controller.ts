@@ -1,16 +1,19 @@
-import { Controller, Delete, Get, HttpStatus, ParseEnumPipe, Post, Put, Res, Param, Body, ParseUUIDPipe } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Controller, Delete, Get, HttpStatus, ParseEnumPipe, Post, Put, Res, Param, Body, ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { ReportType } from 'src/data';
 import { ReportService } from './report.service';
 import { getReportType } from 'src/utils/getReportType';
 import { CreateReportDto, UpdateReportDto } from '../dtos/report.dtos';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 // @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(AuthGuard)
 @Controller('report/:type')
 export class ReportController {
 
   constructor(private readonly ReportService: ReportService) {
   }
+
   @Get('test')
   test(@Res() res: Response) {
     return res.status(HttpStatus.OK).json({

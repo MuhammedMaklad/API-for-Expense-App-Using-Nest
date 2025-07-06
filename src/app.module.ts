@@ -24,7 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService]
     }),
     JwtModule.registerAsync({
-      global: true,
+      global: true, // Makes this JWT module available globally throughout the application, You won't need to import it in other modules to use its services
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: ((config: ConfigService) => {

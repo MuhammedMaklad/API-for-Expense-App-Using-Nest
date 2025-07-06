@@ -2,19 +2,19 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { signUpDto } from './dtos/signUp.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import * as bcrypt from "bcrypt"
 import { signInDto } from './dtos/signIn.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from './schema/resfresh-token.schema';
 import generateRandomId from 'src/utils/generateRandomId';
+import { RefreshTokenDto } from './dtos/refreshToken.dto';
 @Injectable()
 export class AuthService {
 
   constructor(@InjectModel(User.name) private UserModel: Model<User>,
     @InjectModel(RefreshToken.name) private RefreshTokenModel: Model<RefreshToken>,
     private readonly jwtService: JwtService) {
-
   }
   async signup(signupData: signUpDto) {
 
@@ -53,15 +53,16 @@ export class AuthService {
       throw new UnauthorizedException("Invalid User Credentials");
     }
     // TODO: generate JWT
-
     return this.generateUserToken(user._id as string);
   }
 
 
   async generateUserToken(userId: string) {
+    // TODO: generate access Token
     const accessToken = this.jwtService.sign({ userId }, {
       expiresIn: '1h',
     })
+    // TODO: generate refresh token
     const refreshToken = generateRandomId();
 
     // Calculate expiry date (e.g., 3 days from now)
@@ -74,7 +75,27 @@ export class AuthService {
       refreshToken,
     }
   }
+
+  async refreshToken(refreshTokenData: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenData;
+    // TODO: Check is valid 
+    const token = await this.RefreshTokenModel.findOne({ token: refreshToken });
+    if (!token)
+      throw new UnauthorizedException("Invalid token");
+
+    // TODO: check is expired or not 
+    if (Date.now() > token.expiryDate.getTime())
+      throw new UnauthorizedException("Invalid token");
+
+    return this.generateUserToken(token.userId.toString());
+  }
+
   async storeRefreshToken(userId: string, token: string, expiryDate: Date) {
-    await this.RefreshTokenModel.create({ userId, token, expiryDate })
+    // TODO: store fresh-token in database
+    await this.RefreshTokenModel.updateOne(
+      { userId },
+      { $set: { expiryDate, token } },
+      { upsert: true },
+    )
   }
 }
